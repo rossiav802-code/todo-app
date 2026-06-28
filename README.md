@@ -2,7 +2,7 @@
 
 A professional task manager web application built with vanilla HTML, CSS and JavaScript.
 
-![TaskFlow Preview](preview_.jpeg)
+![TaskFlow Preview](preview.jpeg)
 
 ## 🚀 Live Demo
 
