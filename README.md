@@ -2,7 +2,7 @@
 
 A professional task manager web application built with vanilla HTML, CSS and JavaScript.
 
-![TaskFlow Preview](https://rossiav802-code.github.io/todo-app)
+![TaskFlow Preview](Снимок экрана_28-6-2026_20457_.jpeg)
 
 ## 🚀 Live Demo
 
