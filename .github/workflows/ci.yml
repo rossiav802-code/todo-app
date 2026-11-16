@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build image
         run: |
-          docker build \
+          docker build --pull --no-cache \
             -t ghcr.io/${{ github.repository }}:latest \
             -t ghcr.io/${{ github.repository }}:${{ github.sha }} .
       - name: Trivy scan
