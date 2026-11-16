@@ -1,24 +1,48 @@
 name: CI
+
 on:
   push:
     branches: [main]
   pull_request:
+
 permissions:
   contents: read
-  packages: write
+
 jobs:
-  build-scan-push:
+  lint-secrets:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-scan-push:
+    needs: lint-secrets
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
       - name: Build image
-        run: docker build -t ghcr.io/${{ github.repository }}:latest .
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository }}:latest \
+            -t ghcr.io/${{ github.repository }}:${{ github.sha }} .
       - name: Trivy scan
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ghcr.io/${{ github.repository }}:latest
+          image-ref: ghcr.io/${{ github.repository }}:${{ github.sha }}
           severity: HIGH,CRITICAL
-          exit-code: '0'
+          exit-code: '1'
       - name: Login to GHCR
         if: github.event_name == 'push'
         uses: docker/login-action@v3
@@ -28,4 +52,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Push image
         if: github.event_name == 'push'
-        run: docker push ghcr.io/${{ github.repository }}:latest
+        run: |
+          docker push ghcr.io/${{ github.repository }}:latest
+          docker push ghcr.io/${{ github.repository }}:${{ github.sha }}
