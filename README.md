@@ -56,6 +56,10 @@ git clone https://github.com/rossiav802-code/todo-app.git
 Or just open the **[Live Demo](https://rossiav802-code.github.io/todo-app)**
 
 ---
+## CI/CD security note
+
+The CI pipeline (build, Trivy scan, push to GHCR) initially failed because the pinned `aquasecurity/trivy-action@0.28.0` tag was removed after a supply-chain compromise of the action's tags in March 2026. The action was updated to `v0.36.0`. Lesson: pin third-party actions to a verified version (ideally a full commit SHA) and review security advisories when a pinned dependency disappears.
+
 
 ## 👤 Author
 
